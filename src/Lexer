@@ -1,0 +1,119 @@
+import java.lang.System;
+import java.io.*;
+
+class Lexer {
+
+	Yylex tokenizer;
+	public  Lexer(String fileName) 
+	{
+	  try
+	  {
+	  tokenizer=new Yylex(new BufferedReader(new FileReader(fileName)));
+	  }
+	  catch(Exception e)
+	  {
+	  
+	  }	 
+	}
+	public Token nextToken()
+	{
+		Token next=null;
+		try
+		{
+		 next=  tokenizer.getToken();
+		}
+		catch(Exception e)
+		{
+		}
+		return next;
+	}
+	}
+
+
+%%
+
+
+%function getToken
+%type Token
+%char
+%line
+
+
+%{
+	//initialize  variables to be used by class
+%}
+
+
+%init{
+
+//Add code to be executed on initialization of the lexer
+
+%init}
+
+
+
+newline = (\n)
+unicode_letter = [a-zA-Z]
+decimal_digit = [0-9]
+CONST = "const"
+Import = "import"
+FUNC = "func"
+EQUAL = "="
+OPEN_PARAN = "("
+CLOSE_PARAN = ")"
+OPEN_CURLY = "{"
+CLOSE_CURLY = "}"
+DOT = "."
+VAR = "var"
+SLASH = "/"
+escapeChars = " "
+IDENTIFIER =   ({unicode_letter})+({decimal_digit})*({unicode_letter})*
+PACKAGE = "package"
+unicode_char = (.)
+letter = [{unicode_letter}"_"]
+keywords = "break"|"default"|"func"|"case"|"struct"|"else"|"package"|"switch"|"const"|"if"|"range"|"type"|"continue"|"for"|"import"|"return"|"var"
+STRING_LIT = \" {IDENTIFIER} \"
+binary_op = {OR_OP} | {AND_OP} |  {REL_OP} | {AND_OP} | {mul_op}
+OR_OP = "||"
+AND_OP = "&&"
+REL_OP = "==" | "!=" | "<" |"<=" | ">" | ">="
+AND_OP = "+" | "-" | "|"
+mul_op = "*" | "/" | "%" | "<<" | ">>" | "&"
+INT_LIT = ([1-9]{decimal_digit}*) | ({decimal_digit})+
+unicode_value = {unicode_char} | {escaped_char}
+escaped_char = "\" ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | "\" | \' | \" ) 
+raw_string_lit = "`" {unicode_char | newline} "`"
+interpreted_string_lit = \"{IDENTIFIER}\"
+STRING_LIT = {interpreted_string_lit}
+
+
+
+%eofval{
+//Add code to be executed when the end of the file is reached
+%eofval}
+
+
+%% 
+<YYINITIAL> {OPEN_PARAN} { return (new Token(Token.OPEN_PARAN,yytext()));}
+<YYINITIAL> {CLOSE_PARAN} { return (new Token(Token.CLOSE_PARAN,yytext()));}
+<YYINITIAL> {OPEN_CURLY} { return (new Token(Token.OPEN_CURLY,yytext()));}
+<YYINITIAL> {CLOSE_CURLY} { return (new Token(Token.CLOSE_CURLY,yytext()));}
+<YYINITIAL> {DOT} { return (new Token(Token.DOT,yytext()));}
+<YYINITIAL> {CONST} { return (new Token(Token.CONST,yytext()));}
+<YYINITIAL> {PACKAGE} { return (new Token(Token.PACKAGE,yytext()));}
+<YYINITIAL> {Import} { return (new Token(Token.IMPORT,yytext()));}
+<YYINITIAL> {FUNC} { return (new Token(Token.FUNC,yytext()));}
+<YYINITIAL> {VAR} { return (new Token(Token.VAR,yytext()));}
+<YYINITIAL> {EQUAL} { return (new Token(Token.EQUAL,yytext()));}
+<YYINITIAL> {OR_OP} { return (new Token(Token.OR_OP,yytext()));}
+<YYINITIAL> {STRING_LIT} { return (new Token(Token.STRING_LIT,yytext()));}
+<YYINITIAL> {IDENTIFIER} { return (new Token(Token.IDENTIFIER,yytext()));}
+<YYINITIAL> {INT_LIT} { return (new Token(Token.INT_LIT,yytext()));}
+<YYINITIAL> {escapeChars} {}
+<YYINITIAL> {newline} {}
+<YYINITIAL> {SLASH} { return (new Token(Token.SLASH,yytext()));}
+
+
+<YYINITIAL> . {
+  return new Token(Token.ERROR, "Invalid input: " + yytext());
+}
