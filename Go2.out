@@ -1,0 +1,26 @@
+PACKAGE : package
+IDENTIFIER : main
+IMPORT : import
+OPEN_PARAN : (
+STRING_LIT : "fmt"
+STRING_LIT : "math"
+CLOSE_PARAN : )
+FUNC : func
+IDENTIFIER : main
+OPEN_PARAN : (
+CLOSE_PARAN : )
+OPEN_CURLY : {
+IDENTIFIER : fmt
+DOT : .
+IDENTIFIER : println
+OPEN_PARAN : (
+STRING_LIT : "now you have %g problems."
+COMMA : ,
+IDENTIFIER : math
+DOT : .
+IDENTIFIER : sqrt
+OPEN_PARAN : (
+INT_LIT : 7
+CLOSE_PARAN : )
+CLOSE_CURLY : }
+EOF: Done

@@ -257,10 +257,10 @@ class Yylex {
 		/* 18 */ YY_NO_ANCHOR,
 		/* 19 */ YY_NO_ANCHOR,
 		/* 20 */ YY_NO_ANCHOR,
-		/* 21 */ YY_NOT_ACCEPT,
+		/* 21 */ YY_NO_ANCHOR,
 		/* 22 */ YY_NO_ANCHOR,
-		/* 23 */ YY_NO_ANCHOR,
-		/* 24 */ YY_NOT_ACCEPT,
+		/* 23 */ YY_NOT_ACCEPT,
+		/* 24 */ YY_NO_ANCHOR,
 		/* 25 */ YY_NO_ANCHOR,
 		/* 26 */ YY_NO_ANCHOR,
 		/* 27 */ YY_NO_ANCHOR,
@@ -268,7 +268,7 @@ class Yylex {
 		/* 29 */ YY_NO_ANCHOR,
 		/* 30 */ YY_NO_ANCHOR,
 		/* 31 */ YY_NO_ANCHOR,
-		/* 32 */ YY_NOT_ACCEPT,
+		/* 32 */ YY_NO_ANCHOR,
 		/* 33 */ YY_NO_ANCHOR,
 		/* 34 */ YY_NO_ANCHOR,
 		/* 35 */ YY_NO_ANCHOR,
@@ -286,28 +286,27 @@ class Yylex {
 		/* 47 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"31:10,29,31:2,0,31:18,28,31,24,31:5,1,2,31:4,5,30,26,27:9,31:3,22,31:3,25:2" +
-"6,31:6,12,25,6,25,15,19,14,25,16,25,13,25,17,8,7,11,25,18,9,10,20,21,25:4,3" +
-",23,4,31:2,32:2")[0];
+"28:9,3,1,28:2,0,28:18,2,28,27,28:5,4,5,28:2,29,28,8,33,31,32:9,28:3,25,28:3" +
+",30:26,28:6,15,30,9,30,18,22,17,30,19,30,16,30,20,11,10,14,30,21,12,13,23,2" +
+"4,30:4,6,26,7,28:2,34:2")[0];
 
 	private int yy_rmap[] = unpackFromString(1,48,
-"0,1:5,2,1,3,4,1:5,5,1,5:4,6,7,8,9,10,1,11,12,13,14,15,16,17,18,19,20,21,22," +
-"23,24,25,26,27,28,5,29,30")[0];
+"0,1:8,2,1,3,1,4,1:3,5,6,5:4,6,7,8,9,1,10,11,12,13,14,15,16,17,18,19,20,21,2" +
+"2,23,24,25,26,5,27,28")[0];
 
-	private int yy_nxt[][] = unpackFromString(31,33,
-"-1,1,2,3,4,5,6,45:4,46,45:4,47,45:2,38,45,31,7,8,23,45,26,9,10,11,12,26,13," +
-"-1:39,45,39,45:14,-1:3,45,33:2,-1:28,14,-1:35,9:2,-1:11,45:16,-1:3,45,33:2," +
-"-1:11,21:16,-1:2,16,21,32:2,-1:11,45:12,15,45:3,-1:3,45,33:2,-1:11,21:16,-1" +
-":3,21,-1:13,24:16,-1:2,16,24,-1:13,25:16,-1:3,25,-1:13,17,45:15,-1:3,45,33:" +
-"2,-1:11,45:4,18,45:11,-1:3,45,33:2,-1:11,45:4,19,45:11,-1:3,45,33:2,-1:11,4" +
-"5:9,20,45:6,-1:3,45,33:2,-1:11,45:6,22,45:9,-1:3,45,33:2,-1:11,24:16,-1:2,1" +
-"6,24,32:2,-1:11,25:16,-1:3,25,33:2,-1:11,45:2,27,45:13,-1:3,45,33:2,-1:11,4" +
-"5:3,28,45:12,-1:3,45,33:2,-1:11,45:12,29,45:3,-1:3,45,33:2,-1:11,45:8,30,45" +
-":7,-1:3,45,33:2,-1:11,45:14,34,45,-1:3,45,33:2,-1:11,45:2,35,45:13,-1:3,45," +
-"33:2,-1:11,42,45:15,-1:3,45,33:2,-1:11,45:5,43,45:10,-1:3,45,33:2,-1:11,45:" +
-"7,44,45:8,-1:3,45,33:2,-1:11,45,36,45:14,-1:3,45,33:2,-1:11,45:6,37,45:9,-1" +
-":3,45,33:2,-1:11,45:6,40,45:9,-1:3,45,33:2,-1:11,45:11,41,45:4,-1:3,45,33:2" +
-",-1:5");
+	private int yy_nxt[][] = unpackFromString(29,35,
+"-1,1,2,3,4,5,6,7,8,9,45:4,46,45:4,47,45:2,38,45,32,10,11,25,27,12,45,27,13," +
+"14,15,-1:44,45,39,45:14,-1:5,45,33:2,-1:28,16,-1:39,13:2,-1:11,45:16,-1:5,4" +
+"5,33:2,-1:4,23:25,18,23:6,-1:10,45:12,17,45:3,-1:5,45,33:2,-1:4,23:32,-1:10" +
+",26:16,-1:5,26,-1:13,19,45:15,-1:5,45,33:2,-1:11,45:4,20,45:11,-1:5,45,33:2" +
+",-1:11,45:4,21,45:11,-1:5,45,33:2,-1:11,45:9,22,45:6,-1:5,45,33:2,-1:11,45:" +
+"6,24,45:9,-1:5,45,33:2,-1:11,26:16,-1:5,26,33:2,-1:11,45:2,28,45:13,-1:5,45" +
+",33:2,-1:11,45:3,29,45:12,-1:5,45,33:2,-1:11,45:12,30,45:3,-1:5,45,33:2,-1:" +
+"11,45:8,31,45:7,-1:5,45,33:2,-1:11,45:14,34,45,-1:5,45,33:2,-1:11,45:2,35,4" +
+"5:13,-1:5,45,33:2,-1:11,42,45:15,-1:5,45,33:2,-1:11,45:5,43,45:10,-1:5,45,3" +
+"3:2,-1:11,45:7,44,45:8,-1:5,45,33:2,-1:11,45,36,45:14,-1:5,45,33:2,-1:11,45" +
+":6,37,45:9,-1:5,45,33:2,-1:11,45:6,40,45:9,-1:5,45,33:2,-1:11,45:11,41,45:4" +
+",-1:5,45,33:2,-1:2");
 
 	public Token getToken ()
 		throws java.io.IOException {
@@ -333,6 +332,7 @@ class Yylex {
 			if (YY_EOF == yy_lookahead && true == yy_initial) {
 
 //Add code to be executed when the end of the file is reached
+  return (new Token(Token.EOF,"Done"));
 			}
 			if (YY_F != yy_next_state) {
 				yy_state = yy_next_state;
@@ -355,186 +355,194 @@ class Yylex {
 					yy_to_mark();
 					switch (yy_last_accept_state) {
 					case 1:
-						{ return (new Token(Token.OPEN_PARAN,yytext()));}
+						{}
 					case -2:
 						break;
 					case 2:
-						{ return (new Token(Token.CLOSE_PARAN,yytext()));}
+						{}
 					case -3:
 						break;
 					case 3:
-						{ return (new Token(Token.OPEN_CURLY,yytext()));}
+						{}
 					case -4:
 						break;
 					case 4:
-						{ return (new Token(Token.CLOSE_CURLY,yytext()));}
+						{ return (new Token(Token.OPEN_PARAN,yytext()));}
 					case -5:
 						break;
 					case 5:
-						{ return (new Token(Token.DOT,yytext()));}
+						{ return (new Token(Token.CLOSE_PARAN,yytext()));}
 					case -6:
 						break;
 					case 6:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Token(Token.OPEN_CURLY,yytext()));}
 					case -7:
 						break;
 					case 7:
-						{ return (new Token(Token.EQUAL,yytext()));}
+						{ return (new Token(Token.CLOSE_CURLY,yytext()));}
 					case -8:
 						break;
 					case 8:
-						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext());
-}
+						{ return (new Token(Token.DOT,yytext()));}
 					case -9:
 						break;
 					case 9:
-						{ return (new Token(Token.INT_LIT,yytext()));}
+						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -10:
 						break;
 					case 10:
-						{}
+						{ return (new Token(Token.EQUAL,yytext()));}
 					case -11:
 						break;
 					case 11:
-						{}
-					case -12:
-						break;
-					case 12:
-						{ return (new Token(Token.SLASH,yytext()));}
-					case -13:
-						break;
-					case 13:
-						
-					case -14:
-						break;
-					case 14:
-						{ return (new Token(Token.OR_OP,yytext()));}
-					case -15:
-						break;
-					case 15:
-						{ return (new Token(Token.VAR,yytext()));}
-					case -16:
-						break;
-					case 16:
-						{ return (new Token(Token.STRING_LIT,yytext()));}
-					case -17:
-						break;
-					case 17:
-						{ return (new Token(Token.FUNC,yytext()));}
-					case -18:
-						break;
-					case 18:
-						{ return (new Token(Token.CONST,yytext()));}
-					case -19:
-						break;
-					case 19:
-						{ return (new Token(Token.IMPORT,yytext()));}
-					case -20:
-						break;
-					case 20:
-						{ return (new Token(Token.PACKAGE,yytext()));}
-					case -21:
-						break;
-					case 22:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
-					case -22:
-						break;
-					case 23:
 						{
   return new Token(Token.ERROR, "Invalid input: " + yytext());
 }
+					case -12:
+						break;
+					case 12:
+						{ return (new Token(Token.COMMA,yytext()));}
+					case -13:
+						break;
+					case 13:
+						{ return (new Token(Token.INT_LIT,yytext()));}
+					case -14:
+						break;
+					case 14:
+						{ return (new Token(Token.SLASH,yytext()));}
+					case -15:
+						break;
+					case 15:
+						
+					case -16:
+						break;
+					case 16:
+						{ return (new Token(Token.OR_OP,yytext()));}
+					case -17:
+						break;
+					case 17:
+						{ return (new Token(Token.VAR,yytext()));}
+					case -18:
+						break;
+					case 18:
+						{ return (new Token(Token.STRING_LIT,yytext()));}
+					case -19:
+						break;
+					case 19:
+						{ return (new Token(Token.FUNC,yytext()));}
+					case -20:
+						break;
+					case 20:
+						{ return (new Token(Token.CONST,yytext()));}
+					case -21:
+						break;
+					case 21:
+						{ return (new Token(Token.IMPORT,yytext()));}
+					case -22:
+						break;
+					case 22:
+						{ return (new Token(Token.PACKAGE,yytext()));}
 					case -23:
 						break;
-					case 25:
+					case 24:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -24:
 						break;
-					case 26:
+					case 25:
 						{
   return new Token(Token.ERROR, "Invalid input: " + yytext());
 }
 					case -25:
 						break;
-					case 27:
+					case 26:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -26:
 						break;
-					case 28:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+					case 27:
+						{
+  return new Token(Token.ERROR, "Invalid input: " + yytext());
+}
 					case -27:
 						break;
-					case 29:
+					case 28:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -28:
 						break;
-					case 30:
+					case 29:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -29:
 						break;
-					case 31:
+					case 30:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -30:
 						break;
-					case 33:
+					case 31:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -31:
 						break;
-					case 34:
+					case 32:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -32:
 						break;
-					case 35:
+					case 33:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -33:
 						break;
-					case 36:
+					case 34:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -34:
 						break;
-					case 37:
+					case 35:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -35:
 						break;
-					case 38:
+					case 36:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -36:
 						break;
-					case 39:
+					case 37:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -37:
 						break;
-					case 40:
+					case 38:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -38:
 						break;
-					case 41:
+					case 39:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -39:
 						break;
-					case 42:
+					case 40:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -40:
 						break;
-					case 43:
+					case 41:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -41:
 						break;
-					case 44:
+					case 42:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -42:
 						break;
-					case 45:
+					case 43:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -43:
 						break;
-					case 46:
+					case 44:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -44:
 						break;
-					case 47:
+					case 45:
 						{ return (new Token(Token.IDENTIFIER,yytext()));}
 					case -45:
+						break;
+					case 46:
+						{ return (new Token(Token.IDENTIFIER,yytext()));}
+					case -46:
+						break;
+					case 47:
+						{ return (new Token(Token.IDENTIFIER,yytext()));}
+					case -47:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

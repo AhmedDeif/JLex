@@ -18,8 +18,8 @@ import java.io.IOException;
  */
 public class MLA {
 	public static void main(String[] args) {
-		String inFile = "Go.in";
-		String outFile = "Go.out";
+		String inFile = "Go2.in";
+		String outFile = "Go2.out";
 
 		if (args.length > 1) {
 			inFile = args[0];
