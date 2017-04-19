@@ -38,9 +38,14 @@ class Lexer {
 %char
 %line
 
+%state InCurly
+%state InBrack
+
 
 %{
 	//initialize  variables to be used by class
+	int curlyBrackets = 0;
+	int regularBrackets = 0;
 %}
 
 
@@ -61,25 +66,29 @@ keywords = "break"|"default"|"func"|"case"|"struct"|"else"|"package"|"switch"|"c
 binary_op = {OR_OP} | {AND_OP} |  {REL_OP} | {AND_OP} | {mul_op}
 OR_OP = "||"
 AND_OP = "&&"
-REL_OP = "==" | "!=" | "<" |"<=" | ">" | ">="
-AND_OP = "+" | "-" | "|"
-mul_op = "*" | "/" | "%" | "<<" | ">>" | "&"
-INT_LIT = ([1-9]{decimal_digit}*) | ({decimal_digit})+
-escaped_char = "\" ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | "\" | \' | \" ) 
-
+REL_OP =  "=="|"<"|"!="|"<="|">"|">="
+AND_OP = "+"|"-"|"|"
+mul_op = "*"|"/"|"%"|"<<"|">>"|"&"
+INT_LIT = ({decimal_digit})+ | ([1-9]{decimal_digit}*)
+escaped_char = (\\("a"|"b"|"f"|"n"|"r"|"t"|"v"|\\|\'|\"))
+PERCENT = "%"
 unicode_value = {unicode_char} | {escaped_char}
-
 raw_string_lit =  \`({unicode_char}+|{newline}+)\`
 interpreted_string_lit = \"{unicode_value}+\"
-
-STRING_LIT =  {interpreted_string_lit} | {raw_string_lit}
-
+STRING_LIT =  {interpreted_string_lit}|{raw_string_lit}
+comment = //{unicode_value}+
+COLON_EQUAL = ":="
 CONST = "const"
 Import = "import"
 FUNC = "func"
+ELSE = "else"
+IF = "if"
+RETURN = "return"
 Comma = ","
-
+PLUS = "+"
+AND_OP = "&&"
 EQUAL = "="
+SEMI_COLON = ";"
 OPEN_PARAN = "("
 CLOSE_PARAN = ")"
 OPEN_CURLY = "{"
@@ -90,7 +99,16 @@ SLASH = "/"
 escapeChars = " "
 IDENTIFIER =   ({unicode_letter})+({decimal_digit})*({unicode_letter})*
 PACKAGE = "package"
-
+ASTRISK = "*"
+MINUS = "-"
+COLON = ":"
+OPEN_SQUARE = "["
+CLOSE_SQUARE = "]"
+FOR = "for"
+INCREMENT = "++"
+CASE = "case"
+SWITCH = "switch"
+DEFAULT = "default"
 
 
 
@@ -107,7 +125,13 @@ TAB = "	"
 
 %eofval{
 //Add code to be executed when the end of the file is reached
-  return (new Token(Token.EOF,"Done"));
+	if(yy_lexical_state == InCurly) {
+	return new Token(Token.ERROR, "Missing a }");
+	}
+	if(yy_lexical_state == InBrack) {
+	return new Token(Token.ERROR, "Missing a )");
+	}
+  	return (new Token(Token.EOF,"Done"));
 %eofval}
 
 
@@ -115,25 +139,52 @@ TAB = "	"
 <YYINITIAL> {newline} {}
 <YYINITIAL> {escapeChars} {}
 <YYINITIAL> {TAB} {}
-<YYINITIAL> {OPEN_PARAN} { return (new Token(Token.OPEN_PARAN,yytext()));}
-<YYINITIAL> {CLOSE_PARAN} { return (new Token(Token.CLOSE_PARAN,yytext()));}
-<YYINITIAL> {OPEN_CURLY} { return (new Token(Token.OPEN_CURLY,yytext()));}
-<YYINITIAL> {CLOSE_CURLY} { return (new Token(Token.CLOSE_CURLY,yytext()));}
+
+<YYINITIAL> {OPEN_PARAN} {  regularBrackets++; return (new Token(Token.OPEN_PARAN,yytext()));}
+<YYINITIAL> {CLOSE_PARAN} {   return (new Token(Token.CLOSE_PARAN,yytext()));}
+
+<YYINITIAL> {OPEN_CURLY} {  curlyBrackets++; return (new Token(Token.OPEN_CURLY,yytext()));}
+<YYINITIAL> {CLOSE_CURLY} {  return (new Token(Token.CLOSE_CURLY,yytext()));}
+<YYINITIAL> {PERCENT} { return (new Token(Token.PERCENT,yytext()));}
 <YYINITIAL> {DOT} { return (new Token(Token.DOT,yytext()));}
 <YYINITIAL> {CONST} { return (new Token(Token.CONST,yytext()));}
 <YYINITIAL> {PACKAGE} { return (new Token(Token.PACKAGE,yytext()));}
 <YYINITIAL> {Import} { return (new Token(Token.IMPORT,yytext()));}
 <YYINITIAL> {FUNC} { return (new Token(Token.FUNC,yytext()));}
+<YYINITIAL> {ELSE} { return (new Token(Token.ELSE,yytext()));}
+<YYINITIAL> {IF} { return (new Token(Token.IF,yytext()));}
+<YYINITIAL> {RETURN} { return (new Token(Token.RETURN,yytext()));}
+<YYINITIAL> {ASTRISK} { return (new Token(Token.ASTRISK,yytext()));}
+<YYINITIAL> {MINUS} { return (new Token(Token.MINUS,yytext()));}
+<YYINITIAL> {FOR} { return (new Token(Token.FOR,yytext()));}
+<YYINITIAL> {INCREMENT} { return (new Token(Token.INCREMENT,yytext()));}
+<YYINITIAL> {CASE} { return (new Token(Token.CASE,yytext()));}
+<YYINITIAL> {SWITCH} { return (new Token(Token.SWITCH,yytext()));}
+<YYINITIAL> {DEFAULT} { return (new Token(Token.DEFAULT,yytext()));}
 <YYINITIAL> {VAR} { return (new Token(Token.VAR,yytext()));}
+<YYINITIAL> {REL_OP} { return (new Token(Token.REL_OP,yytext()));}
+<YYINITIAL> {PLUS} { return (new Token(Token.PLUS,yytext()));}
+
 <YYINITIAL> {EQUAL} { return (new Token(Token.EQUAL,yytext()));}
+<YYINITIAL> {COLON} { return (new Token(Token.COLON,yytext()));}
+<YYINITIAL> {OPEN_SQUARE} { return (new Token(Token.OPEN_SQUARE,yytext()));}
+<YYINITIAL> {CLOSE_SQUARE} { return (new Token(Token.CLOSE_SQUARE,yytext()));}
+
+
+<YYINITIAL> {COLON_EQUAL} { return (new Token(Token.COLON_EQUAL,yytext()));}
+
+<YYINITIAL> {AND_OP} { return (new Token(Token.AND_OP,yytext()));}
 <YYINITIAL> {OR_OP} { return (new Token(Token.OR_OP,yytext()));}
 <YYINITIAL> {STRING_LIT} { return (new Token(Token.STRING_LIT,yytext()));}
 <YYINITIAL> {Comma} { return (new Token(Token.COMMA,yytext()));}
 <YYINITIAL> {IDENTIFIER} { return (new Token(Token.IDENTIFIER,yytext()));}
 <YYINITIAL> {INT_LIT} { return (new Token(Token.INT_LIT,yytext()));}
 <YYINITIAL> {SLASH} { return (new Token(Token.SLASH,yytext()));}
+<YYINITIAL> {SEMI_COLON} { return (new Token(Token.SEMI_COLON,yytext()));}
+<YYINITIAL> {comment} {}
+
 
 
 <YYINITIAL> . {
-  return new Token(Token.ERROR, "Invalid input: " + yytext());
+  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
