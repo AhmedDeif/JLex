@@ -1,0 +1,67 @@
+PACKAGE : package
+IDENTIFIER : main
+IMPORT : import
+OPEN_PARAN : (
+STRING_LIT : "fmt"
+STRING_LIT : "runtime"
+CLOSE_PARAN : )
+FUNC : func
+IDENTIFIER : main
+OPEN_PARAN : (
+CLOSE_PARAN : )
+OPEN_CURLY : {
+IDENTIFIER : fmt
+DOT : .
+IDENTIFIER : Print
+OPEN_PARAN : (
+ERROR: Invalid input: " in line 9
+IDENTIFIER : Go
+IDENTIFIER : runs
+IDENTIFIER : on
+ERROR: Invalid input: " in line 10
+CLOSE_PARAN : )
+SWITCH : switch
+IDENTIFIER : os
+COLON_EQUAL : :=
+IDENTIFIER : runtime
+DOT : .
+IDENTIFIER : GOOS
+SEMI_COLON : ;
+IDENTIFIER : os
+OPEN_CURLY : {
+CASE : case
+STRING_LIT : "darwin"
+COLON : :
+IDENTIFIER : fmt
+DOT : .
+IDENTIFIER : Println
+OPEN_PARAN : (
+ERROR: Invalid input: " in line 13
+IDENTIFIER : OS
+IDENTIFIER : X
+DOT : .
+ERROR: Invalid input: " in line 14
+CLOSE_PARAN : )
+CASE : case
+STRING_LIT : "linux"
+COLON : :
+IDENTIFIER : fmt
+DOT : .
+IDENTIFIER : Println
+OPEN_PARAN : (
+STRING_LIT : "Linux."
+CLOSE_PARAN : )
+DEFAULT : default
+COLON : :
+IDENTIFIER : fmt
+DOT : .
+IDENTIFIER : Printf
+OPEN_PARAN : (
+STRING_LIT : "%s."
+COMMA : ,
+IDENTIFIER : os
+CLOSE_PARAN : )
+ERROR: ) has no matching ( in line 21
+CLOSE_CURLY : }
+CLOSE_CURLY : }
+EOF: Done

@@ -7,13 +7,12 @@ IDENTIFIER : main
 OPEN_PARAN : (
 CLOSE_PARAN : )
 OPEN_CURLY : {
-IDENTIFIER : if
+IF : if
 INT_LIT : 7
-ERROR: Invalid input: %
+PERCENT : %
 INT_LIT : 2
-EQUAL : =
-EQUAL : =
-ERROR: Invalid input: 0
+REL_OP : ==
+INT_LIT : 0
 OPEN_CURLY : {
 IDENTIFIER : fmt
 DOT : .
@@ -22,7 +21,7 @@ OPEN_PARAN : (
 STRING_LIT : "7 is even"
 CLOSE_PARAN : )
 CLOSE_CURLY : }
-IDENTIFIER : else
+ELSE : else
 OPEN_CURLY : {
 IDENTIFIER : fmt
 DOT : .
@@ -31,21 +30,18 @@ OPEN_PARAN : (
 STRING_LIT : "7 is odd"
 CLOSE_PARAN : )
 CLOSE_CURLY : }
-IDENTIFIER : if
+IF : if
 INT_LIT : 12
-ERROR: Invalid input: %
+PERCENT : %
 INT_LIT : 4
-EQUAL : =
-EQUAL : =
-ERROR: Invalid input: 0
-ERROR: Invalid input: &
-ERROR: Invalid input: &
+REL_OP : ==
+INT_LIT : 0
+AND_OP : &&
 INT_LIT : 12
-ERROR: Invalid input: %
+PERCENT : %
 INT_LIT : 3
-EQUAL : =
-EQUAL : =
-ERROR: Invalid input: 0
+REL_OP : ==
+INT_LIT : 0
 OPEN_CURLY : {
 IDENTIFIER : fmt
 DOT : .
@@ -54,15 +50,14 @@ OPEN_PARAN : (
 STRING_LIT : "12 is divisible by 4, and 3"
 CLOSE_PARAN : )
 CLOSE_CURLY : }
-IDENTIFIER : if
+IF : if
 IDENTIFIER : num
-ERROR: Invalid input: :
-EQUAL : =
+COLON_EQUAL : :=
 INT_LIT : 9
-ERROR: Invalid input: ;
+SEMI_COLON : ;
 IDENTIFIER : num
-ERROR: Invalid input: <
-ERROR: Invalid input: 0
+REL_OP : <
+INT_LIT : 0
 OPEN_CURLY : {
 IDENTIFIER : fmt
 DOT : .
@@ -73,10 +68,10 @@ COMMA : ,
 STRING_LIT : "is negative"
 CLOSE_PARAN : )
 CLOSE_CURLY : }
-IDENTIFIER : else
-IDENTIFIER : if
+ELSE : else
+IF : if
 IDENTIFIER : num
-ERROR: Invalid input: <
+REL_OP : <
 INT_LIT : 10
 OPEN_CURLY : {
 IDENTIFIER : fmt
@@ -88,7 +83,7 @@ COMMA : ,
 STRING_LIT : "has 1 digit"
 CLOSE_PARAN : )
 CLOSE_CURLY : }
-IDENTIFIER : else
+ELSE : else
 OPEN_CURLY : {
 IDENTIFIER : fmt
 DOT : .

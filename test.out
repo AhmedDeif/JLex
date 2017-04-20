@@ -1,0 +1,7 @@
+IDENTIFIER : apackage
+IDENTIFIER : aaaaapackage
+REL_OP : ==
+EQUAL : =
+IDENTIFIER : a
+PACKAGE : package
+EOF: The number of curly is0

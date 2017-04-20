@@ -1,5 +1,6 @@
 import java.lang.System;
 import java.io.*;
+import java.util.Stack;
 
 class Lexer {
 
@@ -38,14 +39,29 @@ class Lexer {
 %char
 %line
 
-%state InCurly
-%state InBrack
+%state OpenBracket
+
 
 
 %{
 	//initialize  variables to be used by class
+	
+	class bracketController {
+		boolean curly = false;
+		boolean bracket = false;
+		public bracketController(boolean curly, boolean bracket) {
+			this.curly = curly;
+			this.bracket = bracket;
+		}
+	}
+	
 	int curlyBrackets = 0;
 	int regularBrackets = 0;
+	
+	Stack<bracketController> bracketsStack = new Stack<bracketController>();
+	
+	
+	
 %}
 
 
@@ -59,7 +75,8 @@ class Lexer {
 
 newline = (\n)
 unicode_letter = [a-zA-Z]
-unicode_char = (.)
+unicode_char = [^\n\`\"]
+commentChars = (.)
 letter = [{unicode_letter}"_"]
 decimal_digit = [0-9]
 keywords = "break"|"default"|"func"|"case"|"struct"|"else"|"package"|"switch"|"const"|"if"|"range"|"type"|"continue"|"for"|"import"|"return"|"var"
@@ -70,13 +87,13 @@ REL_OP =  "=="|"<"|"!="|"<="|">"|">="
 AND_OP = "+"|"-"|"|"
 mul_op = "*"|"/"|"%"|"<<"|">>"|"&"
 INT_LIT = ({decimal_digit})+ | ([1-9]{decimal_digit}*)
-escaped_char = (\\("a"|"b"|"f"|"n"|"r"|"t"|"v"|\\|\'|\"))
+escaped_char = \\("a"|"b"|"f"|"n"|"r"|"t"|"v"|\\|\'|\")
 PERCENT = "%"
-unicode_value = {unicode_char} | {escaped_char}
+unicode_value = {escaped_char}|{unicode_char}|
 raw_string_lit =  \`({unicode_char}+|{newline}+)\`
-interpreted_string_lit = \"{unicode_value}+\"
+interpreted_string_lit = (\")({unicode_value})*(\")
 STRING_LIT =  {interpreted_string_lit}|{raw_string_lit}
-comment = //{unicode_value}+
+comment = //{commentChars}+
 COLON_EQUAL = ":="
 CONST = "const"
 Import = "import"
@@ -109,42 +126,87 @@ INCREMENT = "++"
 CASE = "case"
 SWITCH = "switch"
 DEFAULT = "default"
-
-
-
-
-
-
-
-
-
-
 TAB = "	"
+TYPE = "type"
+STRUCT = "struct"
 
 
 
 %eofval{
 //Add code to be executed when the end of the file is reached
-	if(yy_lexical_state == InCurly) {
-	return new Token(Token.ERROR, "Missing a }");
+	if(bracketsStack.isEmpty())
+	{
+		return (new Token(Token.EOF,"Done"));
 	}
-	if(yy_lexical_state == InBrack) {
-	return new Token(Token.ERROR, "Missing a )");
+	if(bracketsStack.peek().bracket){
+		return (new Token(Token.EOF,"There is some ( that is not closed"));
 	}
-  	return (new Token(Token.EOF,"Done"));
+	else {
+		return (new Token(Token.EOF,"There is some { that is not closed"));
+	}
+  	
 %eofval}
 
 
 %% 
+
 <YYINITIAL> {newline} {}
+<YYINITIAL> {TYPE} { return (new Token(Token.TYPE,yytext()));}
+<YYINITIAL> {STRUCT} { return (new Token(Token.STRUCT,yytext()));}
 <YYINITIAL> {escapeChars} {}
 <YYINITIAL> {TAB} {}
-
-<YYINITIAL> {OPEN_PARAN} {  regularBrackets++; return (new Token(Token.OPEN_PARAN,yytext()));}
-<YYINITIAL> {CLOSE_PARAN} {   return (new Token(Token.CLOSE_PARAN,yytext()));}
-
-<YYINITIAL> {OPEN_CURLY} {  curlyBrackets++; return (new Token(Token.OPEN_CURLY,yytext()));}
-<YYINITIAL> {CLOSE_CURLY} {  return (new Token(Token.CLOSE_CURLY,yytext()));}
+<YYINITIAL> {OPEN_PARAN} {  
+	bracketController temp = new bracketController(false,true); 
+	bracketsStack.push(temp);
+	regularBrackets++; 
+	return (new Token(Token.OPEN_PARAN,yytext()));
+}
+<YYINITIAL> {CLOSE_PARAN} {
+	if(bracketsStack.isEmpty()){
+		return (new Token(Token.ERROR,"Error: ) has no matching ( in line " + (yyline+1)));
+	}
+	else {
+	
+		if(bracketsStack.peek().bracket){
+			bracketsStack.pop();
+			regularBrackets--; 
+			return (new Token(Token.CLOSE_PARAN,yytext()));
+		}
+		else {
+		
+		if(regularBrackets >= 1){
+			//	I know that this bracket was open somewhere
+			return (new Token(Token.ERROR,"You have a missing bracket in line " + (yyline+1)));
+		}
+			return (new Token(Token.ERROR,") has no matching ( in line " + (yyline+1)));
+		}
+	}
+}
+<YYINITIAL> {OPEN_CURLY} { 
+	bracketController temp = new bracketController(true,false);
+	bracketsStack.push(temp);
+	 curlyBrackets++; 
+	 return (new Token(Token.OPEN_CURLY,yytext()));
+}
+<YYINITIAL> {CLOSE_CURLY} {
+	if(bracketsStack.isEmpty()){
+		return (new Token(Token.ERROR,"Error: } has no matching { in line " + (yyline+1)));
+	}
+	else {
+		if(bracketsStack.peek().curly){
+			bracketsStack.pop();
+			curlyBrackets--; 
+			return (new Token(Token.CLOSE_CURLY,yytext()));
+		}
+		else {
+				if(curlyBrackets >= 1){
+					//	I know that this bracket was open somewhere
+					return (new Token(Token.ERROR,"You have a missing bracket in line " + (yyline+1)));
+				}
+			return (new Token(Token.ERROR,"} has no matching { in line " + (yyline+1)));
+		}
+	}
+}
 <YYINITIAL> {PERCENT} { return (new Token(Token.PERCENT,yytext()));}
 <YYINITIAL> {DOT} { return (new Token(Token.DOT,yytext()));}
 <YYINITIAL> {CONST} { return (new Token(Token.CONST,yytext()));}
@@ -164,15 +226,11 @@ TAB = "	"
 <YYINITIAL> {VAR} { return (new Token(Token.VAR,yytext()));}
 <YYINITIAL> {REL_OP} { return (new Token(Token.REL_OP,yytext()));}
 <YYINITIAL> {PLUS} { return (new Token(Token.PLUS,yytext()));}
-
 <YYINITIAL> {EQUAL} { return (new Token(Token.EQUAL,yytext()));}
 <YYINITIAL> {COLON} { return (new Token(Token.COLON,yytext()));}
 <YYINITIAL> {OPEN_SQUARE} { return (new Token(Token.OPEN_SQUARE,yytext()));}
 <YYINITIAL> {CLOSE_SQUARE} { return (new Token(Token.CLOSE_SQUARE,yytext()));}
-
-
 <YYINITIAL> {COLON_EQUAL} { return (new Token(Token.COLON_EQUAL,yytext()));}
-
 <YYINITIAL> {AND_OP} { return (new Token(Token.AND_OP,yytext()));}
 <YYINITIAL> {OR_OP} { return (new Token(Token.OR_OP,yytext()));}
 <YYINITIAL> {STRING_LIT} { return (new Token(Token.STRING_LIT,yytext()));}
