@@ -1,0 +1,48 @@
+import java.io.*;
+import java_cup.runtime.*;
+
+/*
+parser code {:
+:};*/
+	
+/* Terminals (tokens returned by the scanner). */
+terminal IDENTIFIER, BREAK, DEFAULT, FUNC, CASE, STRUCT, ELSE,
+					PACKAGE, SWITCH, CONST, IF, TYPE, FOR, IMPORT, RETURN, VAR,
+					OR_OP, AND_OP, REL_OP, INT_LIT, PLUS, MINUS, STRING_LIT,
+					OPEN_PARAN, CLOSE_PARAN, OPEN_CURLY, CLOSE_CURLY, OPEN_SQUARE,
+					CLOSE_SQUARE, SEMI_COLON, COMMA, DOT, COLON, COLON_EQUAL,
+					EQUAL, CDOTS, ASTRISK, SHIFT_LEFT, SHIFT_RIGHT, BAR, SLASH,
+					EXCLAMATION, LESS_DASH, AMBERSAND, PERCENT, INCREMENT, DECREMENT;		
+
+/* Non-terminals */
+nonterminal	binary_op, add_op, mul_op;
+
+precedence left SEMI_COLON;
+precedence left COMMA;
+precedence left OPEN_PARAN;
+precedence left REL_OP, AND_OP, OR_OP;
+precedence left PLUS, MINUS, BAR;
+precedence left ASTRISK, PERCENT, SLASH, SHIFT_LEFT, SHIFT_RIGHT, AMBERSAND;
+
+start with binary_op;
+
+/* The grammar */
+binary_op ::= OR_OP
+			  {:
+			  :}
+			  |
+			  AND_OP
+			  {:
+			  :}
+			  |
+			  REL_OP
+			  {:
+			  :}
+			  |
+			  add_op
+			  {:
+			  :}
+			  |
+			  mul_op
+			  {:
+			  :};

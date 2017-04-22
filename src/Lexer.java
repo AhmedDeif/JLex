@@ -1,34 +1,10 @@
 import java.lang.System;
 import java.io.*;
 import java.util.Stack;
-class Lexer {
-	Yylex tokenizer;
-	public  Lexer(String fileName) 
-	{
-	  try
-	  {
-	  tokenizer=new Yylex(new BufferedReader(new FileReader(fileName)));
-	  }
-	  catch(Exception e)
-	  {
-	  }	 
-	}
-	public Token nextToken()
-	{
-		Token next=null;
-		try
-		{
-		 next=  tokenizer.getToken();
-		}
-		catch(Exception e)
-		{
-		}
-		return next;
-	}
-	}
+import java_cup.runtime.Symbol;
 
 
-class Yylex {
+class Lexer implements java_cup.runtime.Scanner {
 	private final int YY_BUFFER_SIZE = 512;
 	private final int YY_F = -1;
 	private final int YY_NO_STATE = -1;
@@ -62,7 +38,7 @@ class Yylex {
 	private boolean yy_at_bol;
 	private int yy_lexical_state;
 
-	Yylex (java.io.Reader reader) {
+	Lexer (java.io.Reader reader) {
 		this ();
 		if (null == reader) {
 			throw (new Error("Error: Bad input stream initializer."));
@@ -70,7 +46,7 @@ class Yylex {
 		yy_reader = new java.io.BufferedReader(reader);
 	}
 
-	Yylex (java.io.InputStream instream) {
+	Lexer (java.io.InputStream instream) {
 		this ();
 		if (null == instream) {
 			throw (new Error("Error: Bad input stream initializer."));
@@ -78,7 +54,7 @@ class Yylex {
 		yy_reader = new java.io.BufferedReader(new java.io.InputStreamReader(instream));
 	}
 
-	private Yylex () {
+	private Lexer () {
 		yy_buffer = new char[YY_BUFFER_SIZE];
 		yy_buffer_read = 0;
 		yy_buffer_index = 0;
@@ -415,7 +391,7 @@ class Yylex {
 "6,-1:4,99:8,-1:8,82,99,83,99:6,-1:3,99:4,-1:10,99,-1:4,76,-1:4,99:3,86,99:4" +
 ",-1:8,99:9,-1:3,99:4,-1:10,99,-1:4,76,-1:2");
 
-	public Token getToken ()
+	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
 		int yy_lookahead;
 		int yy_anchor = YY_NO_ANCHOR;
@@ -441,13 +417,13 @@ class Yylex {
 //Add code to be executed when the end of the file is reached
 	if(bracketsStack.isEmpty())
 	{
-		return (new Token(Token.EOF,"Done"));
+		return (new Symbol(sym.EOF,"Done"));
 	}
 	if(bracketsStack.peek().bracket){
-		return (new Token(Token.EOF,"There is some ( that is not closed"));
+		return (new Symbol(sym.EOF,"There is some ( that is not closed"));
 	}
 	else {
-		return (new Token(Token.EOF,"There is some { that is not closed"));
+		return (new Symbol(sym.EOF,"There is some { that is not closed"));
 	}
 			}
 			if (YY_F != yy_next_state) {
@@ -479,7 +455,7 @@ class Yylex {
 					case -3:
 						break;
 					case 3:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -4:
 						break;
 					case 4:
@@ -491,159 +467,159 @@ class Yylex {
 					case -6:
 						break;
 					case 6:
-						{  
-	bracketController temp = new bracketController(false,true); 
+						{
+	bracketController temp = new bracketController(false,true);
 	bracketsStack.push(temp);
-	regularBrackets++; 
-	return (new Token(Token.OPEN_PARAN,yytext()));
+	regularBrackets++;
+	return (new Symbol(sym.OPEN_PARAN,yytext()));
 }
 					case -7:
 						break;
 					case 7:
 						{
 	if(bracketsStack.isEmpty()){
-		return (new Token(Token.ERROR,"Error: ) has no matching ( in line " + (yyline+1)));
+		return (new Symbol(sym.error,"Error: ) has no matching ( in line " + (yyline+1)));
 	}
 	else {
 		if(bracketsStack.peek().bracket){
 			bracketsStack.pop();
-			regularBrackets--; 
-			return (new Token(Token.CLOSE_PARAN,yytext()));
+			regularBrackets--;
+			return (new Symbol(sym.CLOSE_PARAN,yytext()));
 		}
 		else {
 		if(regularBrackets >= 1){
 			//	I know that this bracket was open somewhere
-			return (new Token(Token.ERROR,"You have a missing bracket in line " + (yyline+1)));
+			return (new Symbol(sym.error,"You have a missing bracket in line " + (yyline+1)));
 		}
-			return (new Token(Token.ERROR,") has no matching ( in line " + (yyline+1)));
+			return (new Symbol(sym.error,") has no matching ( in line " + (yyline+1)));
 		}
 	}
 }
 					case -8:
 						break;
 					case 8:
-						{ 
+						{
 	bracketController temp = new bracketController(true,false);
 	bracketsStack.push(temp);
-	 curlyBrackets++; 
-	 return (new Token(Token.OPEN_CURLY,yytext()));
+	 curlyBrackets++;
+	 return (new Symbol(sym.OPEN_CURLY,yytext()));
 }
 					case -9:
 						break;
 					case 9:
 						{
 	if(bracketsStack.isEmpty()){
-		return (new Token(Token.ERROR,"Error: } has no matching { in line " + (yyline+1)));
+		return (new Symbol(sym.error,"Error: } has no matching { in line " + (yyline+1)));
 	}
 	else {
 		if(bracketsStack.peek().curly){
 			bracketsStack.pop();
-			curlyBrackets--; 
-			return (new Token(Token.CLOSE_CURLY,yytext()));
+			curlyBrackets--;
+			return (new Symbol(sym.CLOSE_CURLY,yytext()));
 		}
 		else {
 				if(curlyBrackets >= 1){
 					//	I know that this bracket was open somewhere
-					return (new Token(Token.ERROR,"You have a missing bracket in line " + (yyline+1)));
+					return (new Symbol(sym.error,"You have a missing bracket in line " + (yyline+1)));
 				}
-			return (new Token(Token.ERROR,"} has no matching { in line " + (yyline+1)));
+			return (new Symbol(sym.error,"} has no matching { in line " + (yyline+1)));
 		}
 	}
 }
 					case -10:
 						break;
 					case 10:
-						{ return (new Token(Token.PERCENT,yytext()));}
+						{ return (new Symbol(sym.PERCENT,yytext()));}
 					case -11:
 						break;
 					case 11:
-						{ return (new Token(Token.DOT,yytext()));}
+						{ return (new Symbol(sym.DOT,yytext()));}
 					case -12:
 						break;
 					case 12:
-						{ return (new Token(Token.ASTRISK,yytext()));}
+						{ return (new Symbol(sym.ASTRISK,yytext()));}
 					case -13:
 						break;
 					case 13:
-						{ return (new Token(Token.MINUS,yytext()));}
+						{ return (new Symbol(sym.MINUS,yytext()));}
 					case -14:
 						break;
 					case 14:
-						{ return (new Token(Token.PLUS,yytext()));}
+						{ return (new Symbol(sym.PLUS,yytext()));}
 					case -15:
 						break;
 					case 15:
-						{ return (new Token(Token.EQUAL,yytext()));}
+						{ return (new Symbol(sym.EQUAL,yytext()));}
 					case -16:
 						break;
 					case 16:
-						{ return (new Token(Token.REL_OP,yytext()));}
+						{ return (new Symbol(sym.REL_OP,yytext()));}
 					case -17:
 						break;
 					case 17:
 						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
+  return new Symbol(sym.error, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
 					case -18:
 						break;
 					case 18:
-						{ return (new Token(Token.COLON,yytext()));}
+						{ return (new Symbol(sym.COLON,yytext()));}
 					case -19:
 						break;
 					case 19:
-						{ return (new Token(Token.OPEN_SQUARE,yytext()));}
+						{ return (new Symbol(sym.OPEN_SQUARE,yytext()));}
 					case -20:
 						break;
 					case 20:
-						{ return (new Token(Token.CLOSE_SQUARE,yytext()));}
+						{ return (new Symbol(sym.CLOSE_SQUARE,yytext()));}
 					case -21:
 						break;
 					case 21:
-						{ return (new Token(Token.COMMA,yytext()));}
+						{ return (new Symbol(sym.COMMA,yytext()));}
 					case -22:
 						break;
 					case 22:
-						{ return (new Token(Token.INT_LIT,yytext()));}
+						{ return (new Symbol(sym.INT_LIT,yytext()));}
 					case -23:
 						break;
 					case 23:
-						{ return (new Token(Token.SLASH,yytext()));}
+						{ return (new Symbol(sym.SLASH,yytext()));}
 					case -24:
 						break;
 					case 24:
-						{ return (new Token(Token.SEMI_COLON,yytext()));}
+						{ return (new Symbol(sym.SEMI_COLON,yytext()));}
 					case -25:
 						break;
 					case 25:
-						{ return (new Token(Token.IF,yytext()));}
+						{ return (new Symbol(sym.IF,yytext()));}
 					case -26:
 						break;
 					case 26:
-						{ return (new Token(Token.INCREMENT,yytext()));}
+						{ return (new Symbol(sym.INCREMENT,yytext()));}
 					case -27:
 						break;
 					case 27:
-						{ return (new Token(Token.COLON_EQUAL,yytext()));}
+						{ return (new Symbol(sym.COLON_EQUAL,yytext()));}
 					case -28:
 						break;
 					case 28:
-						{ return (new Token(Token.AND_OP,yytext()));}
+						{ return (new Symbol(sym.AND_OP,yytext()));}
 					case -29:
 						break;
 					case 29:
-						{ return (new Token(Token.OR_OP,yytext()));}
+						{ return (new Symbol(sym.OR_OP,yytext()));}
 					case -30:
 						break;
 					case 30:
-						{ return (new Token(Token.STRING_LIT,yytext()));}
+						{ return (new Symbol(sym.STRING_LIT,yytext()));}
 					case -31:
 						break;
 					case 31:
-						{ return (new Token(Token.FOR,yytext()));}
+						{ return (new Symbol(sym.FOR,yytext()));}
 					case -32:
 						break;
 					case 32:
-						{ return (new Token(Token.VAR,yytext()));}
+						{ return (new Symbol(sym.VAR,yytext()));}
 					case -33:
 						break;
 					case 33:
@@ -651,289 +627,289 @@ class Yylex {
 					case -34:
 						break;
 					case 34:
-						{ return (new Token(Token.TYPE,yytext()));}
+						{ return (new Symbol(sym.TYPE,yytext()));}
 					case -35:
 						break;
 					case 35:
-						{ return (new Token(Token.ELSE,yytext()));}
+						{ return (new Symbol(sym.ELSE,yytext()));}
 					case -36:
 						break;
 					case 36:
-						{ return (new Token(Token.CASE,yytext()));}
+						{ return (new Symbol(sym.CASE,yytext()));}
 					case -37:
 						break;
 					case 37:
-						{ return (new Token(Token.FUNC,yytext()));}
+						{ return (new Symbol(sym.FUNC,yytext()));}
 					case -38:
 						break;
 					case 38:
-						{ return (new Token(Token.CONST,yytext()));}
+						{ return (new Symbol(sym.CONST,yytext()));}
 					case -39:
 						break;
 					case 39:
-						{ return (new Token(Token.STRUCT,yytext()));}
+						{ return (new Symbol(sym.STRUCT,yytext()));}
 					case -40:
 						break;
 					case 40:
-						{ return (new Token(Token.SWITCH,yytext()));}
+						{ return (new Symbol(sym.SWITCH,yytext()));}
 					case -41:
 						break;
 					case 41:
-						{ return (new Token(Token.RETURN,yytext()));}
+						{ return (new Symbol(sym.RETURN,yytext()));}
 					case -42:
 						break;
 					case 42:
-						{ return (new Token(Token.IMPORT,yytext()));}
+						{ return (new Symbol(sym.IMPORT,yytext()));}
 					case -43:
 						break;
 					case 43:
-						{ return (new Token(Token.PACKAGE,yytext()));}
+						{ return (new Symbol(sym.PACKAGE,yytext()));}
 					case -44:
 						break;
 					case 44:
-						{ return (new Token(Token.DEFAULT,yytext()));}
+						{ return (new Symbol(sym.DEFAULT,yytext()));}
 					case -45:
 						break;
 					case 46:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -46:
 						break;
 					case 47:
-						{ return (new Token(Token.REL_OP,yytext()));}
+						{ return (new Symbol(sym.REL_OP,yytext()));}
 					case -47:
 						break;
 					case 48:
 						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
+  return new Symbol(sym.error, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
 					case -48:
 						break;
 					case 49:
-						{ return (new Token(Token.STRING_LIT,yytext()));}
+						{ return (new Symbol(sym.STRING_LIT,yytext()));}
 					case -49:
 						break;
 					case 51:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -50:
 						break;
 					case 52:
 						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
+  return new Symbol(sym.error, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
 					case -51:
 						break;
 					case 54:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -52:
 						break;
 					case 55:
 						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
+  return new Symbol(sym.error, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
 					case -53:
 						break;
 					case 57:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -54:
 						break;
 					case 58:
 						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
+  return new Symbol(sym.error, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
 					case -55:
 						break;
 					case 60:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -56:
 						break;
 					case 61:
 						{
-  return new Token(Token.ERROR, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
+  return new Symbol(sym.error, "Invalid input: " + yytext() + " in line " + (yyline+1)) ;
 }
 					case -57:
 						break;
 					case 63:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -58:
 						break;
 					case 64:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -59:
 						break;
 					case 65:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -60:
 						break;
 					case 66:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -61:
 						break;
 					case 67:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -62:
 						break;
 					case 68:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -63:
 						break;
 					case 69:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -64:
 						break;
 					case 70:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -65:
 						break;
 					case 71:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -66:
 						break;
 					case 72:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -67:
 						break;
 					case 73:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -68:
 						break;
 					case 74:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -69:
 						break;
 					case 75:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -70:
 						break;
 					case 76:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -71:
 						break;
 					case 77:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -72:
 						break;
 					case 78:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -73:
 						break;
 					case 79:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -74:
 						break;
 					case 80:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -75:
 						break;
 					case 81:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -76:
 						break;
 					case 82:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -77:
 						break;
 					case 83:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -78:
 						break;
 					case 84:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -79:
 						break;
 					case 85:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -80:
 						break;
 					case 86:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -81:
 						break;
 					case 87:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -82:
 						break;
 					case 88:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -83:
 						break;
 					case 89:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -84:
 						break;
 					case 90:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -85:
 						break;
 					case 91:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -86:
 						break;
 					case 92:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -87:
 						break;
 					case 93:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -88:
 						break;
 					case 94:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -89:
 						break;
 					case 95:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -90:
 						break;
 					case 96:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -91:
 						break;
 					case 97:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -92:
 						break;
 					case 98:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -93:
 						break;
 					case 99:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -94:
 						break;
 					case 100:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -95:
 						break;
 					case 101:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -96:
 						break;
 					case 102:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -97:
 						break;
 					case 103:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -98:
 						break;
 					case 104:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -99:
 						break;
 					case 105:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -100:
 						break;
 					case 106:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -101:
 						break;
 					case 107:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -102:
 						break;
 					case 108:
-						{ return (new Token(Token.IDENTIFIER,yytext()));}
+						{ return (new Symbol(sym.IDENTIFIER,yytext()));}
 					case -103:
 						break;
 					default:
