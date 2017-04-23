@@ -49,12 +49,16 @@ commentChars = (.)
 letter = [{unicode_letter}"_"]
 decimal_digit = [0-9]
 keywords = "break"|"default"|"func"|"case"|"struct"|"else"|"package"|"switch"|"const"|"if"|"range"|"type"|"continue"|"for"|"import"|"return"|"var"
-binary_op = {OR_OP} | {AND_OP} |  {REL_OP} | {AND_OP} | {mul_op}
+binary_op = {OR_OP} | {ADD_OP} |  {REL_OP} | {AND_OP} | {mul_op}
 OR_OP = "||"
 AND_OP = "&&"
+AMBERSAND = "&"
 REL_OP =  "=="|"<"|"!="|"<="|">"|">="
-AND_OP = "+"|"-"|"|"
-mul_op = "*"|"/"|"%"|"<<"|">>"|"&"
+EXCLAMATION = "!"
+ADD_OP = "+"|"-"|"|"
+mul_op = "*"|"/"|{PERCENT}|{SHIFT_LEFT}|{SHIFT_RIGHT}|"&"
+SHIFT_LEFT = "<<"
+SHIFT_RIGHT = ">>"
 INT_LIT = ({decimal_digit})+ | ([1-9]{decimal_digit}*)
 escaped_char = \\("a"|"b"|"f"|"n"|"r"|"t"|"v"|\\|\'|\")
 PERCENT = "%"
@@ -67,12 +71,12 @@ COLON_EQUAL = ":="
 CONST = "const"
 Import = "import"
 FUNC = "func"
+CDOTS = "..."
 ELSE = "else"
 IF = "if"
 RETURN = "return"
 Comma = ","
 PLUS = "+"
-AND_OP = "&&"
 EQUAL = "="
 SEMI_COLON = ";"
 OPEN_PARAN = "("
@@ -98,7 +102,7 @@ DEFAULT = "default"
 TAB = "	"
 TYPE = "type"
 STRUCT = "struct"
-
+LESS_DASH = "<-"
 
 
 %eofval{
@@ -176,10 +180,15 @@ STRUCT = "struct"
 		}
 	}
 }
+
+<YYINITIAL> {CDOTS} { return (new Symbol(sym.CDOTS,yytext()));}
+<YYINITIAL> {LESS_DASH} { return (new Symbol(sym.LESS_DASH,yytext()));}
+<YYINITIAL> {EXCLAMATION} { return (new Symbol(sym.EXCLAMATION,yytext()));}
 <YYINITIAL> {PERCENT} { return (new Symbol(sym.PERCENT,yytext()));}
 <YYINITIAL> {DOT} { return (new Symbol(sym.DOT,yytext()));}
 <YYINITIAL> {CONST} { return (new Symbol(sym.CONST,yytext()));}
 <YYINITIAL> {PACKAGE} { return (new Symbol(sym.PACKAGE,yytext()));}
+<YYINITIAL> {AMBERSAND} { return (new Symbol(sym.AMBERSAND,yytext()));}
 <YYINITIAL> {Import} { return (new Symbol(sym.IMPORT,yytext()));}
 <YYINITIAL> {FUNC} { return (new Symbol(sym.FUNC,yytext()));}
 <YYINITIAL> {ELSE} { return (new Symbol(sym.ELSE,yytext()));}

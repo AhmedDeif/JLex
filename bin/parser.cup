@@ -8,14 +8,24 @@ parser code {:
 /* Terminals (tokens returned by the scanner). */
 terminal IDENTIFIER, BREAK, DEFAULT, FUNC, CASE, STRUCT, ELSE,
 					PACKAGE, SWITCH, CONST, IF, TYPE, FOR, IMPORT, RETURN, VAR,
-					OR_OP, AND_OP, REL_OP, INT_LIT, PLUS, MINUS, STRING_LIT,
+					OR_OP, AND_OP, REL_OP, INT_LIT, PLUS, MINUS,
 					OPEN_PARAN, CLOSE_PARAN, OPEN_CURLY, CLOSE_CURLY, OPEN_SQUARE,
 					CLOSE_SQUARE, SEMI_COLON, COMMA, DOT, COLON, COLON_EQUAL,
 					EQUAL, CDOTS, ASTRISK, SHIFT_LEFT, SHIFT_RIGHT, BAR, SLASH,
-					EXCLAMATION, LESS_DASH, AMBERSAND, PERCENT, INCREMENT, DECREMENT;		
+					EXCLAMATION, LESS_DASH, AMBERSAND, PERCENT, INCREMENT, STRING_LIT, DECREMENT;		
 
 /* Non-terminals */
-nonterminal	binary_op, add_op, mul_op;
+nonterminal	binary_op, ADD_OP, mul_op, unary_op, type, type_name,
+type_lit, array_type, struct_type, function_type, slice_type, array_length, element_type,
+expression, struct_type_temp, field_decl, field_decl_helper, anonymous_field,
+field_decl_helper2, tag, anonymous_field_helper, signature, parameters, result_helper, result,
+parameter_list, parameter_declaration, parameter_declaration_helper, identifier_list,
+parameter_declaration2, method_name, block, statement_list, statement_list_helper, statement,
+declaration, const_decl, type_decl, var_decl, declaration_helper, top_level_decl,
+function_decl, method_decl, top_level_decl_helper, zero_or_one_semicolon, 
+const_decl_helper, const_spec, zero_or_more_const_spec, zero_or_one_type, const_spec_helper,
+zero_or_one_const_spec_helper, zero_or_more_comma_identifier, expression_list,
+zero_or_more_comma_expression;
 
 precedence left SEMI_COLON;
 precedence left COMMA;
@@ -27,22 +37,52 @@ precedence left ASTRISK, PERCENT, SLASH, SHIFT_LEFT, SHIFT_RIGHT, AMBERSAND;
 start with binary_op;
 
 /* The grammar */
-binary_op ::= OR_OP
-			  {:
-			  :}
-			  |
-			  AND_OP
-			  {:
-			  :}
-			  |
-			  REL_OP
-			  {:
-			  :}
-			  |
-			  add_op
-			  {:
-			  :}
-			  |
-			  mul_op
-			  {:
-			  :};
+binary_op ::= OR_OP{::}|AND_OP{::}|REL_OP{::}|ADD_OP{::}|mul_op{::};	  
+ADD_OP ::= PLUS{::}|MINUS{::}|OR_OP{::};
+mul_op ::= ASTRISK{::}|SLASH{::}|PERCENT{::}|SHIFT_LEFT{::}|SHIFT_RIGHT{::}|AMBERSAND{::};
+unary_op ::= PLUS{::}|MINUS{::}|EXCLAMATION{::}|ASTRISK{::}|AMBERSAND{::}|LESS_DASH{::};
+type ::= type_name{::}|type_lit{::};
+type_name ::= IDENTIFIER{::};
+type_lit ::= array_type{::}|struct_type{::}|function_type{::}|slice_type{::};
+array_type ::= OPEN_SQUARE array_length OPEN_SQUARE element_type{::};
+array_length ::= expression{::};
+element_type ::= type{::};
+slice_type ::= OPEN_SQUARE OPEN_SQUARE element_type{::};
+struct_type ::= STRUCT OPEN_CURLY struct_type_temp CLOSE_CURLY{::};
+struct_type_temp ::= field_decl SEMI_COLON struct_type_temp{::} | {::};
+field_decl ::= field_decl_helper field_decl_helper2 {::};
+field_decl_helper ::= identifier_list type {::}|anonymous_field{::};
+field_decl_helper2 ::= tag {::} | {::};
+anonymous_field ::= anonymous_field_helper type_name{::};
+anonymous_field_helper ::= ASTRISK{::} | {::};
+tag ::= STRING_LIT {::};
+function_type ::= FUNC signature{::};
+signature ::=  parameters result_helper {::};
+result_helper ::= result {::} | {::};
+result ::= parameters{::} | OPEN_PARAN type CLOSE_PARAN {::};
+parameters ::= OPEN_PARAN parameter_list_helper CLOSE_PARAN{::};
+parameter_list_helper ::= parameter_list {::} | {::};
+parameter_list ::= parameter_declaration parameter_declaration_helper {::};
+parameter_declaration_helper ::= COMMA parameter_declaration parameter_declaration_helper{::} | {::};
+parameter_declaration ::= identifier_list parameter_declaration2 type {::};
+parameter_declaration2 ::= CDOTS{::} | {::};
+method_name ::= IDENTIFIER{::};
+block ::= OPEN_CURLY statement_list CLOSE_CURLY{::};
+statement_list ::= statement_list_helper{::};
+statement_list_helper ::= statement statement_list_helper{::} | {::};
+declaration ::= const_decl SEMI_COLON{::} | type_decl zero_or_one_semicolon {::} | var_decl SEMI_COLON{::};
+zero_or_one_semicolon ::= SEMI_COLON {::} | {::};
+top_level_decl ::= declaration{::} |  function_decl zero_or_one_semicolon {::}| method_decl zero_or_one_semicolon{::};
+const_decl ::= CONST const_decl_helper{::};
+const_decl_helper ::= const_spec | OPEN_PARAN zero_or_more_const_spec CLOSE_PARAN{::};
+zero_or_more_const_spec ::= const_spec SEMI_COLON zero_or_more_const_spec {::}| {::};
+const_spec ::= IDENTIFIER zero_or_one_const_spec_helper{::};
+zero_or_one_type ::= type{::} | {::};
+const_spec_helper ::= zero_or_one_type EQUAL expression{::};
+zero_or_one_const_spec_helper ::= const_spec_helper{::} | {::};
+identifier_list ::= IDENTIFIER zero_or_more_comma_identifier{::};
+zero_or_more_comma_identifier ::= COMMA IDENTIFIER zero_or_more_comma_identifier{::} | {::};
+expression_list ::= expression zero_or_more_comma_expression{::};
+zero_or_more_comma_expression ::= COMMA expression zero_or_more_comma_expression {::} | {::};
+
+
