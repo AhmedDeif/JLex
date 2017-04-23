@@ -51,6 +51,7 @@ decimal_digit = [0-9]
 keywords = "break"|"default"|"func"|"case"|"struct"|"else"|"package"|"switch"|"const"|"if"|"range"|"type"|"continue"|"for"|"import"|"return"|"var"
 binary_op = {OR_OP} | {ADD_OP} |  {REL_OP} | {AND_OP} | {mul_op}
 OR_OP = "||"
+BAR = "|"
 AND_OP = "&&"
 AMBERSAND = "&"
 REL_OP =  "=="|"<"|"!="|"<="|">"|">="
@@ -96,6 +97,7 @@ OPEN_SQUARE = "["
 CLOSE_SQUARE = "]"
 FOR = "for"
 INCREMENT = "++"
+DECREMENT = "--"
 CASE = "case"
 SWITCH = "switch"
 DEFAULT = "default"
@@ -181,6 +183,8 @@ LESS_DASH = "<-"
 	}
 }
 
+<YYINITIAL> {BAR} { return (new Symbol(sym.BAR,yytext()));}
+<YYINITIAL> {DECREMENT} { return (new Symbol(sym.DECREMENT,yytext()));}
 <YYINITIAL> {CDOTS} { return (new Symbol(sym.CDOTS,yytext()));}
 <YYINITIAL> {LESS_DASH} { return (new Symbol(sym.LESS_DASH,yytext()));}
 <YYINITIAL> {EXCLAMATION} { return (new Symbol(sym.EXCLAMATION,yytext()));}
