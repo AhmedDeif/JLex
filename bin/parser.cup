@@ -18,28 +18,27 @@ terminal IDENTIFIER, BREAK, DEFAULT, FUNC, CASE, STRUCT, ELSE,
 nonterminal	binary_op, ADD_OP, mul_op, unary_op, var_spec_helper, zero_or_one_equal_expression,type, type_name,
 type_lit, array_type, struct_type, function_type, slice_type, array_length, element_type,
 expression, struct_type_temp, field_decl, field_decl_helper, anonymous_field,zero_or_one_element_list,
-field_decl_helper2, tag, anonymous_field_helper, signature, parameters, result_helper, result,
+field_decl_helper2, tag, signature, parameters, result_helper, result,
 parameter_list, parameter_declaration, parameter_declaration_helper, identifier_list,
 parameter_declaration2, method_name, block, statement_list, statement_list_helper, statement,
-declaration, const_decl, type_decl, top_level_decl,
- method_decl, zero_or_one_semicolon, 
-const_decl_helper, const_spec, zero_or_more_const_spec, zero_or_one_type, const_spec_helper,
+declaration, const_decl, type_decl, top_level_decl, method_decl, zero_or_one_semicolon, 
+const_decl_helper, const_spec, zero_or_more_const_spec, const_spec_helper,
 zero_or_one_const_spec_helper, zero_or_more_comma_identifier, expression_list,
-zero_or_more_comma_expression, unary_expr, type_spec, var_decl, var_spec, short_var_decl,
+zero_or_more_comma_expression, type_spec, var_decl, var_spec, short_var_decl,
 function_decl, function_name, function, function_body, receiver, operand, literal, composite_lit,
 literal_type, literal_value, element_list, keyed_element, key, field_name, element,
 basic_lit, operand_name, qualified_ident, function_lit, primary_expr, selector, index, slice, arguments,
 method_expr, receiver_type, simple_stmt, expression_stmt, inc_dec_stmt,
 assignment, assign_op, if_stmt, switch_stmt, expr_switch_stmt, expr_case_clause, expr_switch_case, for_stmt,
 condition, for_clause, init_stmt, post_stmt,return_stmt, break_stmt, source_file, package_clause, package_name,
-import_decl, import_spec,  parameter_list_helper,var_dec,var_dec_helper,zero_or_more_var_spec_semicolon ,
+import_decl, import_spec,  parameter_list_helper,var_dec_helper,zero_or_more_var_spec_semicolon ,
 zero_or_more_type_spec_semicolon,unary_expression,import_path, type_decl_helper,function_decl_helper,
-method_decl_helper,zero_or_one_init_stmt,zero_or_one_condition,zero_or_one_post_stmt,
+method_decl_helper,zero_or_one_init_stmt,zero_or_one_post_stmt,
 zero_or_one_expression_list, zero_or_one_semi_colon, zero_or_more_top_level_decl, zero_or_more_import_decl,
-zero_or_one_simple_stmt_semicolon,zero_or_one_expression,zero_or_more_expr_case_clause,zero_or_one_for_stmt_helper
+zero_or_more_expr_case_clause,zero_or_one_for_stmt_helper
 ,for_stmt_helper,import_decl_helper,zero_or_more_import_spec,zero_or_one_import_spec_helper,import_spec_helper,
-zero_or_one_else,zero_or_one_simple_stmt,if_group,zero_or_more_op,plus_or_minus,zero_or_one_type_type_comma,zero_or_one_arg,
-zero_or_one_expr,zero_or_one_key,zero_or_more_keyed,zero_or_one_square;
+zero_or_one_else,if_group,zero_or_more_op,plus_or_minus,zero_or_one_arg,
+zero_or_one_expr,zero_or_more_keyed,zero_or_one_square;
 
 precedence left SEMI_COLON;
 precedence left COMMA;
@@ -67,8 +66,7 @@ struct_type_temp ::= field_decl SEMI_COLON struct_type_temp{::} | {::};
 field_decl ::= field_decl_helper field_decl_helper2 {::};
 field_decl_helper ::= identifier_list type {::}|anonymous_field{::};
 field_decl_helper2 ::= tag {::} | {::};
-anonymous_field ::= anonymous_field_helper type_name{::};
-anonymous_field_helper ::= ASTRISK{::} | {::};
+anonymous_field ::= ASTRISK type_name{::} | type_name{::};
 tag ::= STRING_LIT {::};
 function_type ::= FUNC signature{::};
 signature ::=  parameters result_helper {::};
@@ -84,27 +82,26 @@ method_name ::= IDENTIFIER{::};
 block ::= OPEN_CURLY statement_list CLOSE_CURLY{::};
 statement_list ::= statement_list_helper{::};
 statement_list_helper ::= statement statement_list_helper{::} | {::};
-declaration ::= const_decl SEMI_COLON{::} | type_decl zero_or_one_semicolon {::} | var_decl SEMI_COLON{::};
+declaration ::= const_decl SEMI_COLON{::} | type_decl {::}|type_decl SEMI_COLON{::} | var_decl SEMI_COLON{::};
 zero_or_one_semicolon ::= SEMI_COLON {::} | {::};
 top_level_decl ::= declaration{::} |  function_decl zero_or_one_semicolon {::}| method_decl zero_or_one_semicolon{::};
 const_decl ::= CONST const_decl_helper{::};
-const_decl_helper ::= const_spec | OPEN_PARAN zero_or_more_const_spec CLOSE_PARAN{::};
+const_decl_helper ::= const_spec{::} | OPEN_PARAN zero_or_more_const_spec CLOSE_PARAN{::};
 zero_or_more_const_spec ::= const_spec SEMI_COLON zero_or_more_const_spec {::} | {::};
 const_spec ::= IDENTIFIER zero_or_one_const_spec_helper{::};
-zero_or_one_type ::= type{::} | {::};
-const_spec_helper ::= zero_or_one_type EQUAL expression{::};
+const_spec_helper ::= type EQUAL expression{::} | EQUAL expression{::};
 zero_or_one_const_spec_helper ::= const_spec_helper{::} | {::};
 identifier_list ::= IDENTIFIER zero_or_more_comma_identifier{::};
 zero_or_more_comma_identifier ::= COMMA IDENTIFIER zero_or_more_comma_identifier{::} | {::};
 expression_list ::= expression zero_or_more_comma_expression{::};
 zero_or_more_comma_expression ::= COMMA expression zero_or_more_comma_expression {::} | {::};
 expression ::= unary_expression {::} | expression binary_op expression {::};
-unary_expression ::= primary_expr | unary_op unary_expr{::};
+unary_expression ::= primary_expr{::} | unary_op unary_expression{::};
 type_decl ::= TYPE type_decl_helper{::};
 type_decl_helper ::= type_spec {::}| OPEN_PARAN zero_or_more_type_spec_semicolon CLOSE_PARAN {::};
 zero_or_more_type_spec_semicolon ::= type_spec SEMI_COLON zero_or_more_type_spec_semicolon{::} | {::};
 type_spec ::= IDENTIFIER type {::};
-var_dec ::= VAR var_dec_helper {::};
+var_decl ::= VAR var_dec_helper {::};
 var_dec_helper ::= var_spec {::} | OPEN_PARAN zero_or_more_var_spec_semicolon CLOSE_PARAN {::};
 zero_or_more_var_spec_semicolon ::= var_spec SEMI_COLON zero_or_more_var_spec_semicolon {::} | {::};
 var_spec ::= IDENTIFIER var_spec_helper {::};
@@ -125,10 +122,15 @@ composite_lit ::= literal_type literal_value {::};
 literal_type ::= struct_type {::} | array_type {::} | OPEN_SQUARE CDOTS CLOSE_SQUARE element_type {::}| slice_type {::}| TYPE type_name{::};
 literal_value ::= OPEN_CURLY zero_or_one_element_list CLOSE_CURLY {::};
 zero_or_one_element_list ::= element_list {::} | {::};
-expr_switch_stmt ::= SWITCH zero_or_one_simple_stmt_semicolon zero_or_one_expression OPEN_CURLY zero_or_more_expr_case_clause CLOSE_CURLY {::};
-zero_or_one_simple_stmt_semicolon ::= simple_stmt SEMI_COLON {::} | {::};
-zero_or_one_expression ::= expression{::} | {::};
+
+
+
+
+
 zero_or_more_expr_case_clause ::= expr_case_clause zero_or_more_expr_case_clause {::}| {::};
+
+
+
 expr_case_clause ::= expr_switch_case COLON statement_list {::};
 expr_switch_case ::= CASE expression_list {::} | DEFAULT{::};
 for_stmt ::= FOR zero_or_one_for_stmt_helper block{::};
@@ -137,7 +139,6 @@ for_stmt_helper ::= condition {::} | for_clause {::};
 condition ::= expression {::};
 for_clause ::= zero_or_one_init_stmt SEMI_COLON zero_or_one_post_stmt SEMI_COLON zero_or_one_post_stmt{::};
 zero_or_one_init_stmt ::= init_stmt {::} |{::};
-zero_or_one_condition ::= condition{::} | {::};
 zero_or_one_post_stmt ::= post_stmt{::} | {::};
 init_stmt ::= simple_stmt{::};
 post_stmt ::= simple_stmt{::};
@@ -164,7 +165,6 @@ import_path ::= STRING_LIT{::};
 element_list ::= keyed_element zero_or_more_keyed{::};
 zero_or_more_keyed ::= COMMA keyed_element zero_or_more_keyed{::} | {::};
 keyed_element ::= key COLON element{::} | element{::};
-zero_or_one_key ::= key COLON{::}|{::};
 key ::= field_name{::}|literal_value{::};
 field_name ::= IDENTIFIER{::};
 element ::= expression{::}|literal_value{::};
@@ -178,8 +178,8 @@ index ::= OPEN_SQUARE expression CLOSE_SQUARE{::};
 slice ::= OPEN_SQUARE zero_or_one_expr COLON zero_or_one_expr CLOSE_SQUARE{::}|OPEN_SQUARE zero_or_one_square COLON expression COLON expression CLOSE_SQUARE{::};
 zero_or_one_expr ::= expression{::}|{::};
 arguments ::= OPEN_PARAN zero_or_one_arg CLOSE_PARAN{::};
-zero_or_one_arg ::= zero_or_one_type expression_list{::}|{::};
-zero_or_one_type_type_comma ::= TYPE type COMMA{::}|{::};
+zero_or_one_arg ::= type expression_list{::} | expression_list{::} |{::};
+
 method_expr ::= DOT receiver_type DOT method_name{::};
 receiver_type ::= OPEN_PARAN ASTRISK type_name CLOSE_PARAN{::}|OPEN_PARAN type_name CLOSE_PARAN{::};
 statement ::= declaration{::}|simple_stmt SEMI_COLON{::}|return_stmt SEMI_COLON{::}|break_stmt SEMI_COLON{::}|block zero_or_one_semicolon{::}|if_stmt zero_or_one_semicolon{::}|switch_stmt zero_or_one_semicolon {::}|for_stmt zero_or_one_semicolon{::};
@@ -190,14 +190,15 @@ plus_or_minus ::= INCREMENT{::}|DECREMENT{::};
 assignment ::= expression_list assign_op expression_list{::};
 assign_op ::= zero_or_more_op EQUAL{::};
 zero_or_more_op ::= ADD_OP{::}| mul_op{::}|{::};
-if_stmt ::= IF zero_or_one_simple_stmt expression block zero_or_one_else{::};
-zero_or_one_simple_stmt ::= simple_stmt SEMI_COLON{::}|{::};
+if_stmt ::= IF simple_stmt SEMI_COLON expression block zero_or_one_else{::} | IF simple_stmt SEMI_COLON{::} expression block zero_or_one_else{::};
 zero_or_one_else ::= ELSE if_group{::};
 if_group ::= if_stmt{::}|block{::};
 switch_stmt ::= expr_switch_stmt{::};
 
-
-
+expr_switch_stmt ::= SWITCH OPEN_CURLY zero_or_more_expr_case_clause CLOSE_CURLY {::}|
+SWITCH expression OPEN_CURLY zero_or_more_expr_case_clause CLOSE_CURLY {::}|
+SWITCH simple_stmt SEMI_COLON OPEN_CURLY zero_or_more_expr_case_clause CLOSE_CURLY {::}|
+SWITCH simple_stmt SEMI_COLON expression OPEN_CURLY zero_or_more_expr_case_clause CLOSE_CURLY {::};
 
 
 
