@@ -21,18 +21,18 @@ expression, struct_type_temp, field_decl, field_decl_helper, anonymous_field,
 field_decl_helper2, tag, anonymous_field_helper, signature, parameters, result_helper, result,
 parameter_list, parameter_declaration, parameter_declaration_helper, identifier_list,
 parameter_declaration2, method_name, block, statement_list, statement_list_helper, statement,
-declaration, const_decl, type_decl, var_decl, declaration_helper, top_level_decl,
-function_decl, method_decl, top_level_decl_helper, zero_or_one_semicolon, 
+declaration, const_decl, type_decl, declaration_helper, top_level_decl,
+ method_decl, top_level_decl_helper, zero_or_one_semicolon, 
 const_decl_helper, const_spec, zero_or_more_const_spec, zero_or_one_type, const_spec_helper,
 zero_or_one_const_spec_helper, zero_or_more_comma_identifier, expression_list,
 zero_or_more_comma_expression, unary_expr, type_spec, var_decl, var_spec, short_val_decl,
-function_decl, function_name, function, function_body, method_decl, receiver, operand, literal, composite_lit,
-literal_type, literal_type, literal_value, element_list, keyed_element, key, field_name, element,
+function_decl, function_name, function, function_body, receiver, operand, literal, composite_lit,
+literal_type, literal_value, element_list, keyed_element, key, field_name, element,
 basic_lit, operand_name, qualified_ident, function_lit, primary_expr, selector, index, slice, arguments,
 method_expr, receiver_type, statment, simple_stmt, expression_stmt, inc_dec_stmt,
 assignment, assign_op, if_stmt, switch_stmt, expr_switch_stmt, expr_case_clause, expr_switch_case, for_stmt,
 condition, for_clause, init_stmt, post_stmt,return_stmt, break_stmt, source_file, package_clause, package_name,
-import_decl, import_spec, import_path;
+import_decl, import_spec,  parameter_list_helper ,zero_or_more_type_spec_semicolon,unary_expression,import_path, type_decl_helper,function_decl_helper,method_decl_helper;
 
 precedence left SEMI_COLON;
 precedence left COMMA;
@@ -91,5 +91,34 @@ identifier_list ::= IDENTIFIER zero_or_more_comma_identifier{::};
 zero_or_more_comma_identifier ::= COMMA IDENTIFIER zero_or_more_comma_identifier{::} | {::};
 expression_list ::= expression zero_or_more_comma_expression{::};
 zero_or_more_comma_expression ::= COMMA expression zero_or_more_comma_expression {::} | {::};
+expression ::= unary_expression {::} | expression binary_op expression {::};
+unary_expression ::= primary_expr | unary_op unary_expr{::};
+type_decl ::= TYPE type_decl_helper{::};
+type_decl_helper ::= type_spec {::}| OPEN_PARAN zero_or_more_type_spec_semicolon CLOSE_PARAN {::};
+zero_or_more_type_spec_semicolon ::= type_spec SEMI_COLON zero_or_more_type_spec_semicolon{::} | {::};
+type_spec ::= IDENTIFIER type {::};
+var_dec ::= VAR var_dec_helper {::};
+var_dec_helper ::= var_spec {::} | OPEN_PARAN zero_or_more_var_spec_semicolon CLOSE_PARAN {::};
+zero_or_more_var_spec_semicolon ::= var_spec SMEI_COLON zero_or_more_var_spec_semicolon {::} | {::};
+var_spec ::= IDENTIFIER var_spec_helper {::};
+var_spec_helper ::= type zero_or_one_equal_expression {::} | EQUAL expression {::};
+zero_or_one_equal_expression ::= EQUAL expression {::} | {::};
+short_var_decl ::= identifier_list COLON_EQUAL expression {::};
+function_decl ::= FUNC function_name function_decl_helper {::};
+function_decl_helper ::= function{::} | signature {::};
+function_name ::= IDENTIFIER {::};
+function ::= signature function_body {::};
+function_body ::= block{::};
+method_decl ::= FUNC receiver method_name method_decl_helper{::};
+method_decl_helper ::= function{::} | signature {::};
+receiver ::= parameters{::};
+operand ::= literal {::} | operand_name {::} | method_expr {::}| OPEN_PARAN expression CLOSE_PARAN {::};
+literal ::= basic_lit {::} | composite_lit {::} | function_lit {::};
+composite_lit ::= literal_type literal_value {::};
+literal_type ::= struct_type {::} | array_type {::} | OPEN_SQUARE CDOTS CLOSE_SQUARE element_type {::}| slice_type {::}| TYPE type_name{::};
+literal_value ::= OPEN_CURLY zero_or_one_element_list CLOSE_CURLY {::};
+zero_or_one_element_list ::= element_list {::} | {::}
+
+
 
 
