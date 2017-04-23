@@ -12,7 +12,7 @@ terminal IDENTIFIER, BREAK, DEFAULT, FUNC, CASE, STRUCT, ELSE,
 					OPEN_PARAN, CLOSE_PARAN, OPEN_CURLY, CLOSE_CURLY, OPEN_SQUARE,
 					CLOSE_SQUARE, SEMI_COLON, COMMA, DOT, COLON, COLON_EQUAL,
 					EQUAL, CDOTS, ASTRISK, SHIFT_LEFT, SHIFT_RIGHT, BAR, SLASH,
-					EXCLAMATION, LESS_DASH, AMBERSAND, PERCENT, INCREMENT, STRING_LIT, DECREMENT;		
+					EXCLAMATION, LESS_DASH, AMBERSAND, PERCENT, parameter_list_helper ,INCREMENT, STRING_LIT, DECREMENT;		
 
 /* Non-terminals */
 nonterminal	binary_op, ADD_OP, mul_op, unary_op, type, type_name,
@@ -25,7 +25,14 @@ declaration, const_decl, type_decl, var_decl, declaration_helper, top_level_decl
 function_decl, method_decl, top_level_decl_helper, zero_or_one_semicolon, 
 const_decl_helper, const_spec, zero_or_more_const_spec, zero_or_one_type, const_spec_helper,
 zero_or_one_const_spec_helper, zero_or_more_comma_identifier, expression_list,
-zero_or_more_comma_expression;
+zero_or_more_comma_expression, unary_expr, type_spec, var_decl, var_spec, short_val_decl,
+function_decl, function_name, function, function_body, method_decl, receiver, operand, literal, composite_lit,
+literal_type, literal_type, literal_value, element_list, keyed_element, key, field_name, element,
+basic_lit, operand_name, qualified_ident, function_lit, primary_expr, selector, index, slice, arguments,
+method_expr, receiver_type, statment, simple_stmt, expression_stmt, inc_dec_stmt,
+assignment, assign_op, if_stmt, switch_stmt, expr_switch_stmt, expr_case_clause, expr_switch_case, for_stmt,
+condition, for_clause, init_stmt, post_stmt,return_stmt, break_stmt, source_file, package_clause, package_name,
+import_decl, import_spec, import_path;
 
 precedence left SEMI_COLON;
 precedence left COMMA;
@@ -44,7 +51,7 @@ unary_op ::= PLUS{::}|MINUS{::}|EXCLAMATION{::}|ASTRISK{::}|AMBERSAND{::}|LESS_D
 type ::= type_name{::}|type_lit{::};
 type_name ::= IDENTIFIER{::};
 type_lit ::= array_type{::}|struct_type{::}|function_type{::}|slice_type{::};
-array_type ::= OPEN_SQUARE array_length OPEN_SQUARE element_type{::};
+array_type ::= OPEN_SQUARE array_length CLOSE_SQUARE element_type{::};
 array_length ::= expression{::};
 element_type ::= type{::};
 slice_type ::= OPEN_SQUARE OPEN_SQUARE element_type{::};
@@ -75,7 +82,7 @@ zero_or_one_semicolon ::= SEMI_COLON {::} | {::};
 top_level_decl ::= declaration{::} |  function_decl zero_or_one_semicolon {::}| method_decl zero_or_one_semicolon{::};
 const_decl ::= CONST const_decl_helper{::};
 const_decl_helper ::= const_spec | OPEN_PARAN zero_or_more_const_spec CLOSE_PARAN{::};
-zero_or_more_const_spec ::= const_spec SEMI_COLON zero_or_more_const_spec {::}| {::};
+zero_or_more_const_spec ::= const_spec SEMI_COLON zero_or_more_const_spec {::} | {::};
 const_spec ::= IDENTIFIER zero_or_one_const_spec_helper{::};
 zero_or_one_type ::= type{::} | {::};
 const_spec_helper ::= zero_or_one_type EQUAL expression{::};
